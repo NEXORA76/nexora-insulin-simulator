@@ -1013,7 +1013,13 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowLeft')  navigateZone(-1);
   if (e.key === 'Escape')     closeZoneOverlay();
   if (e.key === 'f' || e.key === 'F') toggleFullscreen();
-});</script>
+});
+
+// Expose to global scope (required for onclick attributes in module scripts)
+window.toggleFullscreen  = toggleFullscreen;
+window.navigateZone      = navigateZone;
+window.closeZoneOverlay  = closeZoneOverlay;
+window.showZoneOverlay   = showZoneOverlay;</script>
 
 <!-- Fullscreen Button -->
 <button id="btn-fullscreen" onclick="toggleFullscreen()">⛶ Pantalla Completa</button>

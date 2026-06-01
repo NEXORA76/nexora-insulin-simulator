@@ -234,58 +234,76 @@ header {
 }
 #btn-fullscreen:hover { background:rgba(6,182,212,0.3); }
 
-/* Large zone overlay for presentation */
+/* ── SPLIT LAYOUT (Opción 1) — 3D visible left, info right ── */
 #zone-overlay {
   display:none; position:fixed; inset:0; z-index:500;
-  background:rgba(2,10,30,0.92); backdrop-filter:blur(16px);
-  align-items:center; justify-content:center; flex-direction:column;
-  padding:40px;
+  pointer-events:none;
 }
-#zone-overlay.show { display:flex; }
+#zone-overlay.show { display:block; }
+
+/* Right panel slides in */
+#zo-panel {
+  position:absolute; top:0; right:0; bottom:0;
+  width:42%; 
+  background:linear-gradient(135deg,rgba(3,10,30,0.97),rgba(6,18,50,0.96));
+  backdrop-filter:blur(24px);
+  border-left:1px solid rgba(6,182,212,0.25);
+  box-shadow:-12px 0 60px rgba(0,0,0,0.6);
+  display:flex; flex-direction:column;
+  align-items:flex-start; justify-content:center;
+  padding:40px 36px;
+  pointer-events:all;
+  transform:translateX(100%);
+  transition:transform 0.4s cubic-bezier(0.22,1,0.36,1);
+}
+#zone-overlay.show #zo-panel {
+  transform:translateX(0);
+}
 .zo-badge {
-  font-size:13px; letter-spacing:3px; text-transform:uppercase;
-  padding:8px 24px; border-radius:20px; margin-bottom:24px; font-weight:700;
+  font-size:11px; letter-spacing:3px; text-transform:uppercase;
+  padding:6px 18px; border-radius:20px; margin-bottom:20px; font-weight:700;
+  align-self:flex-start;
 }
 .zo-badge.green  { background:rgba(34,197,94,0.15);  color:#22c55e; border:1px solid rgba(34,197,94,0.3); }
 .zo-badge.blue   { background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); }
 .zo-badge.purple { background:rgba(168,85,247,0.15); color:#c084fc; border:1px solid rgba(168,85,247,0.3); }
 .zo-title {
-  font-size:52px; font-weight:900; color:white; text-align:center;
-  letter-spacing:2px; text-transform:uppercase; margin-bottom:12px;
+  font-size:40px; font-weight:900; color:white;
+  letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;
   line-height:1.1;
 }
 .zo-abs {
-  font-size:22px; color:rgba(255,255,255,0.7); margin-bottom:40px;
-  text-align:center; letter-spacing:1px;
+  font-size:16px; color:rgba(255,255,255,0.6); margin-bottom:28px;
+  letter-spacing:1px;
 }
 .zo-tips {
-  display:flex; flex-direction:column; gap:16px;
-  max-width:800px; width:100%; margin-bottom:48px;
+  display:flex; flex-direction:column; gap:12px;
+  width:100%; margin-bottom:32px;
 }
 .zo-tip {
-  background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);
-  border-left:4px solid #06b6d4; border-radius:10px;
-  padding:18px 24px; font-size:20px; color:rgba(255,255,255,0.9);
+  background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);
+  border-left:3px solid #06b6d4; border-radius:10px;
+  padding:14px 18px; font-size:17px; color:rgba(255,255,255,0.88);
   line-height:1.5;
 }
 .zo-nav {
-  display:flex; gap:20px; align-items:center;
+  display:flex; gap:10px; align-items:center; flex-wrap:wrap;
 }
 .zo-nav-btn {
-  background:rgba(6,182,212,0.15); border:1px solid rgba(6,182,212,0.4);
-  border-radius:12px; padding:14px 32px; color:#06b6d4;
-  font-size:13px; font-weight:700; letter-spacing:2px; text-transform:uppercase;
+  background:rgba(6,182,212,0.12); border:1px solid rgba(6,182,212,0.35);
+  border-radius:10px; padding:12px 22px; color:#06b6d4;
+  font-size:12px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase;
   cursor:pointer; transition:all .2s;
 }
-.zo-nav-btn:hover { background:rgba(6,182,212,0.3); transform:translateY(-2px); }
+.zo-nav-btn:hover { background:rgba(6,182,212,0.28); transform:translateY(-2px); }
 .zo-nav-btn.close-btn {
-  background:rgba(239,68,68,0.1); border-color:rgba(239,68,68,0.3);
+  background:rgba(239,68,68,0.08); border-color:rgba(239,68,68,0.3);
   color:#f87171;
 }
 .zo-nav-btn.close-btn:hover { background:rgba(239,68,68,0.2); }
 .zo-counter {
-  font-size:12px; letter-spacing:2px; color:rgba(255,255,255,0.4);
-  text-transform:uppercase;
+  font-size:11px; letter-spacing:2px; color:rgba(255,255,255,0.35);
+  text-transform:uppercase; width:100%; margin-top:8px;
 }</style>
 </head>
 <body>
@@ -1024,18 +1042,19 @@ window.showZoneOverlay   = showZoneOverlay;</script>
 <!-- Fullscreen Button -->
 <button id="btn-fullscreen" onclick="toggleFullscreen()">⛶ Pantalla Completa</button>
 
-<!-- Large Zone Overlay for Presentation -->
+<!-- Zone Info Panel — slides in from right, 3D model stays visible left -->
 <div id="zone-overlay">
-  <div class="zo-badge" id="zo-badge-abs"></div>
-  <div class="zo-title" id="zo-title-text"></div>
-  <div class="zo-abs" id="zo-abs-text"></div>
-  <div class="zo-tips" id="zo-tips-list"></div>
-  <div class="zo-nav">
-    <button class="zo-nav-btn" onclick="navigateZone(-1)">← Anterior</button>
-    <span class="zo-counter" id="zo-counter"></span>
-    <button class="zo-nav-btn" onclick="navigateZone(1)">Siguiente →</button>
-    <button class="zo-nav-btn close-btn" onclick="closeZoneOverlay()">✕ Cerrar</button>
+  <div id="zo-panel">
+    <div class="zo-badge" id="zo-badge-abs"></div>
+    <div class="zo-title" id="zo-title-text"></div>
+    <div class="zo-abs" id="zo-abs-text"></div>
+    <div class="zo-tips" id="zo-tips-list"></div>
+    <div class="zo-nav">
+      <button class="zo-nav-btn" onclick="navigateZone(-1)">← Anterior</button>
+      <button class="zo-nav-btn" onclick="navigateZone(1)">Siguiente →</button>
+      <button class="zo-nav-btn close-btn" onclick="closeZoneOverlay()">✕ Cerrar</button>
+      <span class="zo-counter" id="zo-counter"></span>
+    </div>
   </div>
 </div></body>
-<!-- v20260601124850 -->
 </html>
